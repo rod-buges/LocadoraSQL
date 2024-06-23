@@ -1,0 +1,476 @@
+CREATE TABLE endereco
+(
+    cod_end     serial primary key,
+    logradouro  varchar(40),
+    tipo_log    varchar(40),
+    complemento varchar(20),
+    cidade      varchar(60),
+    uf          varchar(2),
+    cep         varchar(8),
+    numero      varchar(10),
+    bairro      varchar(60)
+);
+
+SELECT *
+FROM endereco;
+
+
+
+CREATE TABLE profissao
+(
+    cod_prof serial primary key,
+    nome     varchar(60)
+);
+SELECT *
+FROM profissao;
+
+
+
+CREATE TABLE categoria
+(
+    cod_cat serial primary key,
+    nome    varchar(40),
+    valor   money
+);
+SELECT *
+FROM categoria;
+
+
+
+CREATE TABLE genero
+(
+    cod_gen serial primary key,
+    nome    varchar(60)
+);
+SELECT *
+FROM genero;
+
+
+
+CREATE TABLE ator
+(
+    cod_ator serial primary key,
+    nome     varchar(60)
+);
+SELECT *
+FROM ator;
+
+
+
+create table filme_ator
+(
+    cod_ator  integer not null,
+    cod_filme integer not null,
+    ator      varchar(60),
+    diretor   varchar(60)
+);
+
+select *
+from filme_ator;
+
+create table locacao_filme
+(
+    cod_loc    integer not null,
+    cod_filme  integer not null,
+    valor      money,
+    num_dias   integer,
+    data_devol date
+);
+
+select *
+from locacao_filme;
+
+CREATE TABLE dependente
+(
+    cod_dep    serial primary key,
+    cod_cli    integer not null references cliente (cod_cli),
+    parentesco varchar(20)
+);
+
+select *
+from dependente;
+
+create table cliente
+(
+    cod_cli  serial primary key,
+    cpf      varchar(11),
+    nome     varchar(60),
+    telefone varchar(10),
+    cod_prof integer not null,
+    foreign key (cod_prof) references profissao (cod_prof)
+);
+
+select *
+from cliente;
+
+create table cli_endereco
+(
+    cod_end integer not null,
+    cod_cli integer not null,
+    foreign key (cod_end) references endereco (cod_end),
+    foreign key (cod_cli) references cliente (cod_cli)
+);
+
+select *
+from cli_endereco;
+
+create table filmes
+(
+    cod_filme       serial primary key,
+    titulo_original varchar(100),
+    titulo          varchar(100),
+    quantidade      integer,
+    cod_cat         integer not null,
+    cod_gen         integer not null,
+    foreign key (cod_cat) references categoria (cod_cat),
+    foreign key (cod_gen) references genero (cod_gen)
+);
+
+select *
+from filmes;
+
+create table locacao
+(
+    cod_loc   serial primary key,
+    data_loc  date,
+    desconto  money,
+    multa     money,
+    sub_total money,
+    cod_cli   integer not null,
+    foreign key (cod_cli) references cliente (cod_cli)
+);
+
+select *
+from locacao;
+
+--↓↓↓↓↓ inserções ↓↓↓↓↓
+
+INSERT INTO endereco (logradouro, tipo_log, complemento, cidade, uf, cep, numero, bairro)
+VALUES ('Rua das Flores', 'Rua', 'Apto 101', 'Londrina', 'PR', '86000000', '100', 'Centro'),
+       ('Avenida do Sol', 'Avenida', 'Bloco B', 'Curitiba', 'PR', '80000000', '200', 'Batel'),
+       ('Travessa da Lua', 'Travessa', '', 'Maringá', 'PR', '87000000', '300', 'Zona 7'),
+       ('Praça das Estrelas', 'Praça', 'Loja 1', 'Ponta Grossa', 'PR', '84000000', '400', 'Oficinas'),
+       ('Alameda dos Cometas', 'Alameda', '', 'Cascavel', 'PR', '85800000', '500', 'Centro'),
+       ('Beco dos Asteroides', 'Beco', 'Casa 1', 'Foz do Iguaçu', 'PR', '85850000', '600', 'Centro'),
+       ('Viela das Galáxias', 'Viela', '', 'Guarapuava', 'PR', '85000000', '700', 'Centro'),
+       ('Rodovia dos Planetas', 'Rodovia', 'Km 1', 'Toledo', 'PR', '85900000', '800', 'Centro'),
+       ('Passagem dos Meteoros', 'Passagem', '', 'Apucarana', 'PR', '86800000', '900', 'Centro'),
+       ('Largo dos Satélites', 'Largo', 'Casa 2', 'Arapongas', 'PR', '86700000', '1000', 'Centro');
+
+SELECT *
+FROM endereco;
+
+INSERT INTO profissao (nome)
+VALUES ('Engenheiro'),
+       ('Médico'),
+       ('Advogado'),
+       ('Professor'),
+       ('Arquiteto'),
+       ('Dentista'),
+       ('Farmacêutico'),
+       ('Psicólogo'),
+       ('Enfermeiro'),
+       ('Fisioterapeuta');
+
+SELECT *
+FROM profissao;
+
+INSERT INTO categoria (nome, valor)
+VALUES ('Ação', 15.99),
+       ('Comédia', 12.99),
+       ('Drama', 14.99),
+       ('Ficção Científica', 16.99),
+       ('Horror', 13.99),
+       ('Musical', 15.99),
+       ('Romance', 12.99),
+       ('Suspense', 14.99),
+       ('Fantasia', 16.99),
+       ('Documentário', 11.99);
+
+SELECT *
+FROM categoria;
+
+
+INSERT INTO genero (nome)
+VALUES ('Livre'),
+       ('+14'),
+       ('+16'),
+       ('+18');
+
+SELECT *
+FROM genero;
+
+INSERT INTO ator (nome)
+VALUES ('Robert Downey Jr.'),
+       ('Chris Evans'),
+       ('Scarlett Johansson'),
+       ('Tom Hanks'),
+       ('Leonardo DiCaprio'),
+       ('Brad Pitt'),
+       ('Meryl Streep'),
+       ('Jennifer Lawrence'),
+       ('Emma Watson'),
+       ('Denzel Washington');
+
+SELECT *
+FROM ator;
+
+
+INSERT INTO cliente (cpf, nome, telefone, cod_prof)
+VALUES ('12345678901', 'João Silva', '1234567890', 1),
+       ('23456789012', 'Maria Santos', '2345678901', 2),
+       ('34567890123', 'Pedro Costa', '3456789012', 3),
+       ('45678901234', 'Ana Pereira', '4567890123', 4),
+       ('56789012345', 'Lucas Souza', '5678901234', 5),
+       ('67890123456', 'Julia Oliveira', '6789012345', 6),
+       ('78901234567', 'Gabriel Lima', '7890123456', 7),
+       ('89012345678', 'Carla Rocha', '8901234567', 8),
+       ('90123456789', 'Rafael Alves', '9012345678', 9),
+       ('01234567890', 'Fernanda Gomes', '0123456789', 10);
+
+SELECT *
+FROM cliente;
+
+
+INSERT INTO cli_endereco (cod_end, cod_cli)
+values (1, 1),
+       (2, 2),
+       (3, 3),
+       (4, 4),
+       (5, 5),
+       (6, 6),
+       (7, 7),
+       (8, 8),
+       (9, 9),
+       (10, 10);
+
+SELECT *
+FROM cli_endereco;
+
+INSERT INTO filmes (titulo_original, titulo, quantidade, cod_cat, cod_gen)
+VALUES ('The Sound of Music', 'A Noviça Rebelde', 3, 6, 3),
+       ('Some Like It Hot', 'Quanto Mais Quente Melhor', 5, 2, 4),
+       ('Beverly Hills Ninja', 'Um Ninja da Pesada', 8, 1, 4),
+       ('The Blues Brothers', 'Os Irmãos Cara de Pau', 6, 2, 4),
+       ('Ice Princess', 'Sonhos no Gelo', 3, 3, 3),
+       ('The Nightmare Before Christmas', 'O Estranho Mundo de Jack', 5, 9, 3),
+       ('The Parent Trap', 'Operação Cupido', 5, 2, 3),
+       ('Home Alone', 'Esqueceram de Mim', 9, 2, 3),
+       ('The Green Mile', 'À Espera de um Milagre', 8, 3, 5),
+       ('Sleepless in Seattle', 'Sintonia de Amor', 2, 2, 3),
+       ('Ferris Bueller´s Day Off', 'Curtindo a Vida Adoidado', 8, 2, 4),
+       ('The Naked Gun', 'Corra que a Polícia Vem Aí', 6, 1, 4),
+       ('Ocean´s Eleven', 'Onze Homens e Um Segredo', 8, 5, 4),
+       ('Meet the Parents', 'Entrando Numa Fria', 9, 7, 1),
+       ('Ladyhawke', 'O Feitiço de Áquila', 3, 10, 1);
+
+select *
+from filmes;
+
+INSERT INTO filme_ator (cod_ator, cod_filme, ator, diretor)
+values (1, 1, 'Robert Downey Jr', 'Steven Spielberg'),
+       (2, 2, 'Chris Evans', 'Martin Scorsese'),
+       (3, 3, 'Scarlett Johansson', 'Alfred Hitchcock'),
+       (4, 4, 'Tom Hanks', 'Stanley Kubrick'),
+       (5, 5, 'Leonardo DiCaprio', 'Quentin Tarantino'),
+       (6, 6, 'Brad Pitt', 'Christopher Nolan'),
+       (6, 7, 'Brad Pitt', 'Francis Ford Coppola'),
+       (6, 8, 'Brad Pitt', 'Ridley Scott'),
+       (7, 9, 'Meryl Streep', 'James Cameron'),
+       (8, 10, 'Jennifer Lawrence', 'Peter Jackson'),
+       (8, 11, 'Jennifer Lawrence', 'David Fincher'),
+       (9, 12, 'Emma Watson', 'Wes Anderson'),
+       (10, 13, 'Denzel Washington', 'Coen Brothers (Joel e Ethan Coen)'),
+       (10, 14, 'Denzel Washington', 'Guillermo del Toro'),
+       (3, 15, 'Scarlett Johansson', 'Pedro Almodóvar');
+
+select *
+from filme_ator;
+
+insert into dependente (cod_cli, parentesco)
+values (1, 'Filho'),
+       (2, 'Esposa'),
+       (3, 'Marido'),
+       (4, 'Filha'),
+       (5, 'Mãe'),
+       (6, 'Pai'),
+       (7, 'Irmão'),
+       (8, 'Irmã'),
+       (9, 'Primo'),
+       (10, 'Tio');
+
+select *
+from dependente;
+
+INSERT INTO locacao (data_loc, desconto, multa, sub_total, cod_cli)
+VALUES ('2024-06-01', 5.00, 2.00, 20.00, 1),
+       ('2024-06-02', 3.00, 1.50, 15.00, 2),
+       ('2024-06-03', 0.00, 0.00, 10.00, 3),
+       ('2024-06-04', 2.00, 1.00, 12.00, 4),
+       ('2024-06-05', 4.00, 2.50, 18.00, 5),
+       ('2024-06-06', 1.00, 0.50, 8.00, 6),
+       ('2024-06-07', 3.50, 1.75, 14.00, 7),
+       ('2024-06-08', 2.50, 1.25, 11.00, 8),
+       ('2024-06-09', 0.00, 0.00, 9.00, 9),
+       ('2024-06-10', 5.00, 2.00, 20.00, 10),
+       ('2024-06-11', 3.00, 1.50, 15.00, 1),
+       ('2024-06-12', 0.00, 0.00, 10.00, 2),
+       ('2024-06-13', 2.00, 1.00, 12.00, 3),
+       ('2024-06-14', 4.00, 2.50, 18.00, 4),
+       ('2024-06-15', 1.00, 0.50, 8.00, 5),
+       ('2024-06-16', 3.50, 1.75, 14.00, 6),
+       ('2024-06-17', 2.50, 1.25, 11.00, 7),
+       ('2024-06-18', 0.00, 0.00, 9.00, 8),
+       ('2024-06-19', 5.00, 2.00, 20.00, 9),
+       ('2024-06-20', 3.00, 1.50, 15.00, 10);
+
+
+SELECT *
+FROM locacao;
+
+INSERT INTO locacao_filme (cod_loc, cod_filme, valor, num_dias, data_devol)
+VALUES (1, 1, 15.99, 5, '2024-06-06'),
+       (2, 2, 12.99, 6, '2024-06-08'),
+       (3, 3, 15.99, 7, '2024-06-10'),
+       (4, 4, 12.99, 8, '2024-06-12'),
+       (5, 5, 14.99, 9, '2024-06-14'),
+       (6, 5, 14.99, 1, '2024-06-07'),
+       (7, 6, 16.99, 2, '2024-06-09'),
+       (8, 7, 12.99, 3, '2024-06-11'),
+       (9, 8, 12.99, 4, '2024-06-13'),
+       (10, 9, 14.99, 5, '2024-06-15'),
+       (11, 10, 12.99, 1, '2024-06-12'),
+       (12, 10, 12.99, 3, '2024-06-15'),
+       (13, 11, 12.99, 4, '2024-06-17'),
+       (14, 12, 15.99, 5, '2024-06-19'),
+       (15, 13, 13.99, 10, '2024-06-25'),
+       (16, 14, 12.99, 3, '2024-06-19'),
+       (17, 15, 11.99, 2, '2024-06-19'),
+       (18, 15, 11.99, 1, '2024-06-19'),
+       (19, 15, 11.99, 4, '2024-06-23'),
+       (20, 2, 12.99, 6, '2024-06-26');
+
+SELECT *
+FROM locacao_filme;
+
+--Consultas
+
+-- 1 - Listar todos os filmes alugados por um cliente específico, incluindo a data de locação e a data de devolução.
+SELECT filmes.titulo
+FROM cliente
+         JOIN locacao ON cliente.cod_cli = locacao.cod_cli
+         JOIN locacao_filme ON locacao_filme.cod_loc = locacao.cod_loc
+         JOIN filmes ON filmes.cod_filme = locacao_filme.cod_filme
+WHERE cliente.nome = 'João Silva';
+
+-- 2 - Obter uma lista de clientes e seus dependentes.
+SELECT cliente.nome AS Cliente, dependente.parentesco AS Dependente
+FROM cliente
+         JOIN dependente ON cliente.cod_cli = dependente.cod_cli;
+
+-- 3 - Listar todos os filmes de um determinado gênero. (Os gêneros são: Livre, +14, +16, +18).
+SELECT filmes.titulo AS Filmes
+FROM filmes
+         JOIN genero ON filmes.cod_gen = genero.cod_gen
+WHERE genero.nome = 'Livre';
+
+-- 4 - Exibir todos os clientes que têm uma profissão específica.
+SELECT cliente.nome AS Clientes, profissao.nome AS Profissao
+FROM cliente
+         JOIN profissao ON cliente.cod_prof = profissao.cod_prof
+WHERE profissao.nome = 'Engenheiro'
+   OR profissao.nome = 'Médico';
+
+-- 5 - Encontrar todos os filmes em uma categoria específica com quantidade disponível maior que 5.
+SELECT filmes.titulo AS Filmes, categoria.nome AS Categoria
+FROM filmes
+         JOIN categoria ON filmes.cod_cat = categoria.cod_cat
+WHERE categoria.nome = 'Comédia'
+  AND filmes.quantidade > 5;
+
+-- 6 - Listar todos os atores que participaram de filmes com um determinado título.
+SELECT ator.nome AS Ator, filmes.titulo AS filmes
+FROM ator
+         JOIN filme_ator ON filme_ator.cod_ator = ator.cod_ator
+         JOIN filmes ON filmes.cod_filme = filme_ator.cod_filme
+WHERE filmes.titulo = 'Esqueceram de Mim';
+
+-- 7 - Obter o endereço completo de um cliente específico.
+SELECT endereco.logradouro,
+       endereco.tipo_log,
+       endereco.complemento,
+       endereco.cidade,
+       endereco.uf,
+       endereco.cep,
+       endereco.numero AS Endereco,
+       cliente.nome    AS Cliente
+FROM endereco
+         JOIN cli_endereco ON endereco.cod_end = cli_endereco.cod_end
+         JOIN cliente ON cliente.cod_cli = cli_endereco.cod_cli
+WHERE cliente.nome = 'Julia Oliveira';
+
+-- 8 - Listar todos os filmes e seus respectivos gêneros e categorias.
+SELECT filmes.titulo AS Filmes, categoria.nome AS Categoria, genero.nome AS Genero
+FROM filmes
+         JOIN categoria ON categoria.cod_cat = filmes.cod_cat
+         JOIN genero ON genero.cod_gen = filmes.cod_gen;
+
+-- 9 - Mostrar todos os clientes que alugaram um filme específico e a data de locação.
+SELECT cliente.nome AS clientes, filmes.titulo AS filmes, locacao.data_loc AS datadelocacao
+FROM cliente
+         JOIN locacao ON locacao.cod_cli = cliente.cod_cli
+         JOIN locacao_filme ON locacao_filme.cod_loc = locacao.cod_loc
+         JOIN filmes ON locacao_filme.cod_filme = filmes.cod_filme
+WHERE filmes.titulo = 'Esqueceram de Mim';
+
+-- 10 - Exibir a lista de clientes com multas superiores a um valor específico.
+SELECT cliente.nome AS clientes, locacao.multa AS Multa
+FROM cliente
+         JOIN locacao ON locacao.cod_cli = cliente.cod_cli
+WHERE locacao.multa > CAST(1.90 AS money);
+
+-- 11 - Listar todas as locações feitas em um período específico.
+SELECT cliente.nome AS cliente, locacao.data_loc AS datadelocacao
+FROM cliente
+         JOIN locacao ON locacao.cod_cli = cliente.cod_cli
+WHERE locacao.data_loc BETWEEN '2024-06-01' AND '2024-06-02';
+
+-- 12 - Obter a quantidade total de filmes alugados por cada cliente. (DESAFIO)
+SELECT cliente.nome AS cliente, COUNT(locacao.cod_loc) AS total_alugados
+FROM locacao
+         JOIN cliente ON locacao.cod_cli = cliente.cod_cli
+GROUP BY cliente.nome;
+
+-- 13 - Listar os clientes e os filmes que eles alugaram, ordenados por data de locação.
+SELECT cliente.nome AS cliente, filmes.titulo AS filme, locacao.data_loc AS data
+FROM locacao
+         JOIN cliente ON locacao.cod_cli = cliente.cod_cli
+         JOIN locacao_filme ON locacao.cod_loc = locacao_filme.cod_loc
+         JOIN filmes ON locacao_filme.cod_filme = filmes.cod_filme
+ORDER BY locacao.data_loc;
+
+-- 14 - Mostrar todos os clientes que moram em uma cidade específica e que alugaram filmes de uma categoria específica.
+SELECT cliente.nome AS cliente, filmes.titulo AS filme, filmes.cod_cat AS categoria, endereco.cidade AS cidade
+FROM locacao
+         JOIN cliente ON locacao.cod_cli = cliente.cod_cli
+         JOIN endereco ON cliente.cod_cli = endereco.cod_end
+         JOIN locacao_filme ON locacao.cod_loc = locacao_filme.cod_loc
+         JOIN filmes ON locacao_filme.cod_filme = filmes.cod_filme
+WHERE endereco.cidade = 'Curitiba'
+  AND filmes.cod_cat = 'Comédia';
+
+
+-- 15 - Encontrar todos os atores que participaram de pelo menos 5 filmes, listando o nome do ator e o número de filmes em que atuou. (DESAFIO)
+SELECT ator.nome AS ator, COUNT(filme_ator.cod_filme) AS numero_de_filmes
+FROM ator
+         JOIN filme_ator ON ator.cod_ator = filme_ator.cod_ator
+GROUP BY ator.nome
+HAVING COUNT(filme_ator.cod_filme) >= 5;
+
+
+-- 16 - Exibir a quantidade total de filmes alugados por categoria e gênero, incluindo apenas as categorias e gêneros que têm mais de 5 filmes alugados no total (DESAFIO)
+SELECT filmes.cod_cat AS categoria, filmes.cod_gen AS genero, COUNT(locacao_filme.cod_filme) AS numero_de_filmes
+FROM filmes
+         JOIN locacao_filme ON filmes.cod_filme = locacao_filme.cod_filme
+GROUP BY filmes.cod_cat, filmes.cod_gen
+HAVING COUNT(locacao_filme.cod_filme) > 5;
